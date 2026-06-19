@@ -2,9 +2,6 @@ package com.example.data
 
 import android.content.Context
 import androidx.room.*
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -485,13 +482,13 @@ object AppData {
         onInsert = {
             if (::dao.isInitialized) {
                 dao.insertUser(it)
-                writeToFirestore("users", it.userId, it.toMap())
+                SupabaseClient.upsert("users", it.toMap())
             }
         },
         onDelete = {
             if (::dao.isInitialized) {
                 dao.deleteUser(it)
-                deleteFromFirestore("users", it.userId)
+                SupabaseClient.delete("users", "userId", it.userId)
             }
         }
     )
@@ -499,13 +496,13 @@ object AppData {
         onInsert = {
             if (::dao.isInitialized) {
                 dao.insertStudent(it)
-                writeToFirestore("students", it.studentId, it.toMap())
+                SupabaseClient.upsert("students", it.toMap())
             }
         },
         onDelete = {
             if (::dao.isInitialized) {
                 dao.deleteStudent(it)
-                deleteFromFirestore("students", it.studentId)
+                SupabaseClient.delete("students", "studentId", it.studentId)
             }
         }
     )
@@ -513,13 +510,13 @@ object AppData {
         onInsert = {
             if (::dao.isInitialized) {
                 dao.insertTerm(it)
-                writeToFirestore("academic_terms", it.termId, it.toMap())
+                SupabaseClient.upsert("academic_terms", it.toMap())
             }
         },
         onDelete = {
             if (::dao.isInitialized) {
                 dao.deleteTerm(it)
-                deleteFromFirestore("academic_terms", it.termId)
+                SupabaseClient.delete("academic_terms", "termId", it.termId)
             }
         }
     )
@@ -527,13 +524,13 @@ object AppData {
         onInsert = {
             if (::dao.isInitialized) {
                 dao.insertCourse(it)
-                writeToFirestore("courses", it.courseId, it.toMap())
+                SupabaseClient.upsert("courses", it.toMap())
             }
         },
         onDelete = {
             if (::dao.isInitialized) {
                 dao.deleteCourse(it)
-                deleteFromFirestore("courses", it.courseId)
+                SupabaseClient.delete("courses", "courseId", it.courseId)
             }
         }
     )
@@ -541,13 +538,13 @@ object AppData {
         onInsert = {
             if (::dao.isInitialized) {
                 dao.insertEnrollment(it)
-                writeToFirestore("course_enrollments", it.enrollmentId, it.toMap())
+                SupabaseClient.upsert("course_enrollments", it.toMap())
             }
         },
         onDelete = {
             if (::dao.isInitialized) {
                 dao.deleteEnrollment(it)
-                deleteFromFirestore("course_enrollments", it.enrollmentId)
+                SupabaseClient.delete("course_enrollments", "enrollmentId", it.enrollmentId)
             }
         }
     )
@@ -555,13 +552,13 @@ object AppData {
         onInsert = {
             if (::dao.isInitialized) {
                 dao.insertAssessment(it)
-                writeToFirestore("assessments", it.assessmentId, it.toMap())
+                SupabaseClient.upsert("assessments", it.toMap())
             }
         },
         onDelete = {
             if (::dao.isInitialized) {
                 dao.deleteAssessment(it)
-                deleteFromFirestore("assessments", it.assessmentId)
+                SupabaseClient.delete("assessments", "assessmentId", it.assessmentId)
             }
         }
     )
@@ -569,13 +566,13 @@ object AppData {
         onInsert = {
             if (::dao.isInitialized) {
                 dao.insertGrade(it)
-                writeToFirestore("grades", it.gradeId, it.toMap())
+                SupabaseClient.upsert("grades", it.toMap())
             }
         },
         onDelete = {
             if (::dao.isInitialized) {
                 dao.deleteGrade(it)
-                deleteFromFirestore("grades", it.gradeId)
+                SupabaseClient.delete("grades", "gradeId", it.gradeId)
             }
         }
     )
@@ -583,28 +580,7 @@ object AppData {
     fun initDatabase(context: Context) {
         if (isInitialized) return
 
-        // 1. Initialize Firebase programmatically using resources or direct credentials from google-services.json
-        try {
-            if (FirebaseApp.getApps(context).isEmpty()) {
-                val options = try {
-                    FirebaseOptions.fromResource(context)
-                } catch (e: Exception) {
-                    FirebaseOptions.Builder()
-                        .setApplicationId("1:738030426833:android:b84398f31eb150afdc03f0")
-                        .setApiKey("AIzaSyBUbH4YQQkr6qLk8ZQbp3KbZUFFSEeuPdQ")
-                        .setProjectId("assignment-47b3c")
-                        .setStorageBucket("assignment-47b3c.firebasestorage.app")
-                        .build()
-                }
-                if (options != null) {
-                    FirebaseApp.initializeApp(context.applicationContext, options)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        // 2. Initialize Room Database
+        // Initialize Room Database
         db = Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java,
@@ -616,14 +592,14 @@ object AppData {
 
         dao = db.appDao()
 
-        // 3. Populate memory list instantly from SQLite cache (ensures snappy UI)
+        // Populate memory list instantly from SQLite cache (ensures snappy UI)
         val dbUsers = dao.getAllUsers()
         if (dbUsers.isNotEmpty()) {
             loadFromRoomCache()
         }
 
-        // 4. Fetch synchronized updates from Firebase Firestore in the background
-        syncFromFirestore()
+        // Fetch synchronized updates from Supabase REST API in the background
+        syncFromSupabase()
 
         isInitialized = true
     }
@@ -651,132 +627,87 @@ object AppData {
         (grades as DbMutableList).silentAddAll(dao.getAllGrades())
     }
 
-    // --- FIRESTORE SYNC LOGIC ---
+    // --- SUPABASE POSTGREST REST SYNC LOGIC ---
 
-    private fun writeToFirestore(collection: String, docId: String, data: HashMap<String, out Any?>) {
-        try {
-            FirebaseFirestore.getInstance()
-                .collection(collection)
-                .document(docId)
-                .set(data)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    fun syncFromSupabase() {
+        if (!SupabaseClient.isConfigured()) {
+            // If not configured, run offline and seed standard demo dataset if empty
+            if (users.isEmpty()) {
+                seed()
+            }
+            return
         }
-    }
 
-    private fun deleteFromFirestore(collection: String, docId: String) {
-        try {
-            FirebaseFirestore.getInstance()
-                .collection(collection)
-                .document(docId)
-                .delete()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun syncFromFirestore() {
-        val firestore = try { FirebaseFirestore.getInstance() } catch (e: Exception) { null } ?: return
-
-        // 1. Users
-        firestore.collection("users").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = snapshot.documents.mapNotNull { it.data?.toUser() }
-                    if (list.isNotEmpty()) {
-                        (users as DbMutableList).silentClear()
-                        dao.clearUsers()
-                        list.forEach { dao.insertUser(it) }
-                        (users as DbMutableList).silentAddAll(list)
-                    }
+        Thread {
+            try {
+                // 1. Users
+                val usersList = SupabaseClient.fetchAll("users").map { it.toUser() }
+                if (usersList.isNotEmpty()) {
+                    (users as DbMutableList).silentClear()
+                    dao.clearUsers()
+                    usersList.forEach { dao.insertUser(it) }
+                    (users as DbMutableList).silentAddAll(usersList)
                 } else if (users.isEmpty()) {
                     seed()
                 }
-            }
 
-        // 2. Students
-        firestore.collection("students").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = snapshot.documents.mapNotNull { it.data?.toStudent() }
-                    if (list.isNotEmpty()) {
-                        (students as DbMutableList).silentClear()
-                        dao.clearStudents()
-                        list.forEach { dao.insertStudent(it) }
-                        (students as DbMutableList).silentAddAll(list)
-                    }
+                // 2. Students
+                val studentsList = SupabaseClient.fetchAll("students").map { it.toStudent() }
+                if (studentsList.isNotEmpty()) {
+                    (students as DbMutableList).silentClear()
+                    dao.clearStudents()
+                    studentsList.forEach { dao.insertStudent(it) }
+                    (students as DbMutableList).silentAddAll(studentsList)
                 }
-            }
 
-        // 3. Academic Terms
-        firestore.collection("academic_terms").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = snapshot.documents.mapNotNull { it.data?.toAcademicTerm() }
-                    if (list.isNotEmpty()) {
-                        (academicTerms as DbMutableList).silentClear()
-                        dao.clearTerms()
-                        list.forEach { dao.insertTerm(it) }
-                        (academicTerms as DbMutableList).silentAddAll(list)
-                    }
+                // 3. Academic Terms
+                val termsList = SupabaseClient.fetchAll("academic_terms").map { it.toAcademicTerm() }
+                if (termsList.isNotEmpty()) {
+                    (academicTerms as DbMutableList).silentClear()
+                    dao.clearTerms()
+                    termsList.forEach { dao.insertTerm(it) }
+                    (academicTerms as DbMutableList).silentAddAll(termsList)
                 }
-            }
 
-        // 4. Courses
-        firestore.collection("courses").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = snapshot.documents.mapNotNull { it.data?.toCourse() }
-                    if (list.isNotEmpty()) {
-                        (courses as DbMutableList).silentClear()
-                        dao.clearCourses()
-                        list.forEach { dao.insertCourse(it) }
-                        (courses as DbMutableList).silentAddAll(list)
-                    }
+                // 4. Courses
+                val coursesList = SupabaseClient.fetchAll("courses").map { it.toCourse() }
+                if (coursesList.isNotEmpty()) {
+                    (courses as DbMutableList).silentClear()
+                    dao.clearCourses()
+                    coursesList.forEach { dao.insertCourse(it) }
+                    (courses as DbMutableList).silentAddAll(coursesList)
                 }
-            }
 
-        // 5. Enrollments
-        firestore.collection("course_enrollments").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = snapshot.documents.mapNotNull { it.data?.toCourseEnrollment() }
-                    if (list.isNotEmpty()) {
-                        (enrollments as DbMutableList).silentClear()
-                        dao.clearEnrollments()
-                        list.forEach { dao.insertEnrollment(it) }
-                        (enrollments as DbMutableList).silentAddAll(list)
-                    }
+                // 5. Enrollments
+                val enrollmentsList = SupabaseClient.fetchAll("course_enrollments").map { it.toCourseEnrollment() }
+                if (enrollmentsList.isNotEmpty()) {
+                    (enrollments as DbMutableList).silentClear()
+                    dao.clearEnrollments()
+                    enrollmentsList.forEach { dao.insertEnrollment(it) }
+                    (enrollments as DbMutableList).silentAddAll(enrollmentsList)
                 }
-            }
 
-        // 6. Assessments
-        firestore.collection("assessments").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = snapshot.documents.mapNotNull { it.data?.toAssessment() }
-                    if (list.isNotEmpty()) {
-                        (assessments as DbMutableList).silentClear()
-                        dao.clearAssessments()
-                        list.forEach { dao.insertAssessment(it) }
-                        (assessments as DbMutableList).silentAddAll(list)
-                    }
+                // 6. Assessments
+                val assessmentsList = SupabaseClient.fetchAll("assessments").map { it.toAssessment() }
+                if (assessmentsList.isNotEmpty()) {
+                    (assessments as DbMutableList).silentClear()
+                    dao.clearAssessments()
+                    assessmentsList.forEach { dao.insertAssessment(it) }
+                    (assessments as DbMutableList).silentAddAll(assessmentsList)
                 }
-            }
 
-        // 7. Grades
-        firestore.collection("grades").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = snapshot.documents.mapNotNull { it.data?.toGradeLedger() }
-                    if (list.isNotEmpty()) {
-                        (grades as DbMutableList).silentClear()
-                        dao.clearGrades()
-                        list.forEach { dao.insertGrade(it) }
-                        (grades as DbMutableList).silentAddAll(list)
-                    }
+                // 7. Grades
+                val gradesList = SupabaseClient.fetchAll("grades").map { it.toGradeLedger() }
+                if (gradesList.isNotEmpty()) {
+                    (grades as DbMutableList).silentClear()
+                    dao.clearGrades()
+                    gradesList.forEach { dao.insertGrade(it) }
+                    (grades as DbMutableList).silentAddAll(gradesList)
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+        }.start()
     }
 
     fun seed() {
