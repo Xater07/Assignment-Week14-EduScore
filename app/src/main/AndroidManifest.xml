@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:name=".EduScoreApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApplication"
+        tools:targetApi="31">
+
+        <activity
+            android:name="com.example.ui.LoginActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MyApplication">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.example.ui.DashboardActivity"
+            android:exported="false"
+            android:label="Dashboard"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
+            android:name="com.example.ui.StudentActivity"
+            android:exported="false"
+            android:label="Student Profiles"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
+            android:name="com.example.ui.CourseActivity"
+            android:exported="false"
+            android:label="Course Registry"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
+            android:name="com.example.ui.AssessmentActivity"
+            android:exported="false"
+            android:label="Assessments"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
+            android:name="com.example.ui.GradeLedgerActivity"
+            android:exported="false"
+            android:label="Grade Ledger"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
+            android:name="com.example.ui.AcademicTermActivity"
+            android:exported="false"
+            android:label="Academic Terms"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
+            android:name="com.example.ui.UserRolesActivity"
+            android:exported="false"
+            android:label="User Roles"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
+            android:name="com.example.ui.ChartActivity"
+            android:exported="false"
+            android:label="Rank Chart"
+            android:theme="@style/Theme.MyApplication" />
+
+    </application>
+
+</manifest>

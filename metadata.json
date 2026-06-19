@@ -1,0 +1,6 @@
+{
+  "name": "EduScore",
+  "description": "A clean, modern student assessment and academic governance portal with live statistics, grade ledgers, roll enrollments, terms, and custom roles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

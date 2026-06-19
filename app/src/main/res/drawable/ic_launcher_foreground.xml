@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Sophisticated, clean academic graduation cap silhouette as launcher icon -->
+    
+    <!-- Hat Diamond Cap -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,26 L86,39 L54,52 L22,39 Z" />
+
+    <!-- Hat Under Base -->
+    <path
+        android:fillColor="#E2E8F0"
+        android:pathData="M38,47 L38,58 C38,66 70,66 70,58 L70,47 C70,47 54,53 38,47 Z" />
+
+    <!-- Tassel String and Hanging Seal -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M54,39 L82,51 L82,62" />
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M82,64 C84,64 85,65 85,67 C85,69 84,70 82,70 C80,70 79,69 79,67 C79,65 80,64 82,64 Z" />
+</vector>

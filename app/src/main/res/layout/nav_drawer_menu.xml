@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="280dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@color/navy_dark"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Brand Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="8dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_agenda"
+            android:tint="@color/white"
+            android:layout_marginEnd="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EduScore"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Academic Management"
+                android:textColor="@color/inactive"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#334155"
+        android:layout_marginVertical="16dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- MAIN Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MAIN"
+                android:textColor="@color/inactive"
+                android:textSize="11sp"
+                android:textColorHint="@color/inactive"
+                android:textStyle="bold"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Dashboard Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_nav_dashboard"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dashboard"
+                android:textColor="@color/white"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/ic_dialog_dialer"
+                app:iconTint="@color/white"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Student Profile -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_nav_students"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Student Profile"
+                android:textColor="@color/white"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/ic_menu_myplaces"
+                app:iconTint="@color/white"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Course Registry -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_nav_courses"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Course Registry"
+                android:textColor="@color/white"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/ic_menu_agenda"
+                app:iconTint="@color/white"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Grade Ledger -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_nav_grade_ledger"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Grade Ledger"
+                android:textColor="@color/white"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/btn_star"
+                app:iconTint="@color/white"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- CONFIG Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIG"
+                android:textColor="@color/inactive"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Assessment Configuration -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_nav_assessments"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Assessments"
+                android:textColor="@color/white"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/ic_menu_info_details"
+                app:iconTint="@color/white"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Academic Terms -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_nav_terms"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Academic Terms"
+                android:textColor="@color/white"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/ic_menu_my_calendar"
+                app:iconTint="@color/white"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- User and Roles -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_nav_users"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="User &amp; Roles"
+                android:textColor="@color/white"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/ic_menu_sort_by_size"
+                app:iconTint="@color/white"
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Logout Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_nav_logout"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textColor="@color/red"
+        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconTint="@color/red"
+        android:backgroundTint="#2D1F2F"/>
+</LinearLayout>

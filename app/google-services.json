@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738030426833",
+    "project_id": "assignment-47b3c",
+    "storage_bucket": "assignment-47b3c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738030426833:android:b84398f31eb150afdc03f0",
+        "android_client_info": {
+          "package_name": "Eduscore.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUbH4YQQkr6qLk8ZQbp3KbZUFFSEeuPdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
